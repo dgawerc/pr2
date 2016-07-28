@@ -97,11 +97,14 @@ Additionally, the silicon pad has noise dominating for most of the runs, and sub
 For example, Figures \ref{fig:Center} and \ref{fig:MCP} give the time of flight ($\Delta t$) histograms for runs 65-83 (same configuration) for the HGC center pixel and the Photonis MCP, along with their Gaussian fit $\sigma$ parameter. 
 The Gaussian fit used the log-likelihood maximization method.
 Figure \ref{fig:SiPad} gives the TOF histogram for the silicon pad. 
-Figure \ref{fig:wctc} is one of the possible combination histograms (depending on how the individual $\Delta t$ histograms are combined; more about this later). 
-Clearly the combined histogram improves the SiPad resolution by about 4 times, but it is 3-4 times \textit{worse} than the individual resolutions of the PicoSil and MCP. 
-Additionally, the SiPad histogram is peaked, but certainly not Gaussian. 
-Note: The PicoSil distribution is also clearly not perfectly Gaussian because it has a tail on the right side, but it is approximately Gaussian (there was maybe an issue with the run, the electronics, or the imposed cut), and the fit $\sigma$ takes it into account. 
-Thus, because it is usually more favorable to simply exclude the SiPad, I also created variations of the code that does not account for the SiPad.
+Figure \ref{fig:wctc} is one possible combination histogram (more details below on how the individual device $\Delta t$'s can be combined). 
+Clearly the combined histogram improves the silicon pad resolution by about 4 times, but it is 4-5 times \textit{worse} than the individual resolutions of the HGC and MCP. 
+Additionally, the silicon pad histogram is peaked, but certainly not Gaussian. 
+Thus, because it is usually more favorable (in most - but not all - runs) to simply exclude the silicon pad, code that does not account for the silicon pad was also created.
+
+Therefore, because of the change in cabling and the noise in the silicon pad, the following longitudinal analysis codes were used: \textit{MultiDeviceStudy}, \textit{MultiDeviceStudy\_InitialWiring}, \textit{MultiDeviceStudy\_PicosilMCP}, and \textit{MultiDeviceStudy\_InitialWiring\_PicosilMCP}. 
+Because the most applicable file is \textit{MultiDeviceStudy\_PicosilMCP}, it is more extensive than the others, incorporating all of the ring 1 pixels (the 6 pixels surrounding the center pixel; refer to Figure \ref{fig:HGC}) in the analysis. 
+Thus, the code implements transverse analysis of the HGC as well as longitudinal analysis by adding the Photonis MCP.
 
 \begin{figure}
 \centering
@@ -138,88 +141,117 @@ Thus, because it is usually more favorable to simply exclude the SiPad, I also c
 \end{minipage}
 \end{figure}
 
-Therefore, because of the change in cabling and the noise in the SiPad, I created for longitudinal analysis codes: \textit{MultiDeviceStudy}, \textit{MultiDeviceStudy\_InitialWiring}, \textit{MultiDeviceStudy\_PicosilMCP}, and \textit{MultiDeviceStudy\_InitialWiring\_PicosilMCP}. 
-Because the most applicable file is \textit{MultiDeviceStudy\_PicosilMCP}, I have made it more extensive than the other three by incorporating all of the ring 1 pixels (the 6 pixels surrounding the center pixel) in the analysis. 
-Thus, the code I wrote implements both the transverse analysis of the PicoSil as well as the longitudinal analysis by adding the MCP.
 
 \section*{3.2 Data Analysis: Event Selection}
-Before I elaborate upon the different ways to combine the $\Delta t$ of all the pixels of the PicoSil with the MCP, I should explain the cuts that I implement in order to generate the individual $\Delta t$ histograms. 
-Because not every event contains a detected pulse, and some have a lot of ringing noise and a negligible pulse, some events need to be cut out of the $\Delta t$ calculations. 
-In order to ensure that most of the “bad” events are removed from the histograms, I cut on the calculated peak amplitude and overall charge of the event in that detector, forcing them both to be higher than some threshold. 
-This requires that the peak found is not just noise and that the charge (found by integrating the plot) is significant enough to represent a peak.
+Before discussing the various ways to combine the $\Delta t$ values from different detectors, the methodology for selecting events that contribute to their individual TOF histograms should be reviewed.
+Because not every event contains a detected pulse, and some have a lot of ringing noise and a small signal-to-noise ratio, some events need to be cut out of the $\Delta t$ calculations. 
+In order to ensure that most of the \textit{"bad"} events are removed from the histograms, a cut is applied to the calculated peak amplitude (in mA) and to the overall charge (in pC) of the event in that detector, forcing them both to be higher than some threshold. 
+This requires that the peak found is not just noise and that the charge (found by integrating the plot) is significant enough to represent a pulse.
 
-For example, analyzing the data (with \textit{dat2rootCP}) from run 65 returns a maximum amplitude value in the Photek for every event. 
-Filling a histogram with all of these values in the command-line in ROOT gives Figure 1. 
-Clearly the amplitudes that are near zero or negative are events without pulses or very noise events. 
-These events should be ignored, so a cut shall be implemented to only select for events with the amplitude above a certain value. 
-In this case the value appears to be about 0.1. 
-Figure 2 shows the histogram of the amplitudes with only the events that passed the cut.
+For example, analyzing the data (with \textit{dat2rootCP}) from runs 65-83 returns a maximum amplitude value in the Photek for every event. 
+Filling a histogram with all of these values in the command-line in ROOT gives Figure \ref{fig:AmpCut0}. 
+Clearly the amplitudes that are near zero or negative are events without pulses or very noisy events. 
+These events should be ignored, so a cut is implemented to select for amplitudes above a certain value. 
+In this case the value appears to be $0.1\times\sqrt{10}$ mA. 
+Figure \ref{fig:AmpCut1} shows the histogram of the amplitudes with only the events that passed the cut. 
+Figures \ref{fig:ChargeCut0} and \ref{fig:ChargeCut1} show the same methodology being applied to the charge distribution, with a cut at $2\times\sqrt{10}$ pC. 
+Similar cuts were made in the HGC pixels and Photonis MCP. 
 
-%%% INCLUDE 2 FIGURES %%%
+\begin{figure}
+\centering
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{AmpCut0.pdf}
+	\caption{Pulse peak amplitude distribution for the Photek 240 MCP. The $\sqrt{10}$ factor accounts for a 6 dB attenuator.}
+	\label{fig:AmpCut0}
+\end{minipage} \hfill
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{AmpCut1.pdf}
+	\caption{The Photek 240 MCP amplitude distribution with the cut in effect. Non-positive amplitudes represent \textit{"bad"} events.}
+	\label{fig:AmpCut1}
+\end{minipage}
+\end{figure}
 
-Similar cuts were made for the amplitude and charge in the Photek, PicoSil pixels, and Photonis MCP. 
+\begin{figure}
+\centering
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{ChargeCut0.pdf}
+	\caption{Pulse charge distribution for the Photek 240 MCP. The $\sqrt{10}$ factor accounts for a 6 dB attenuator.}
+	\label{fig:ChargeCut0}
+\end{minipage} \hfill
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{ChargeCut1.pdf}
+	\caption{The Photek 240 MCP charge distribution with the cut in effect. Zeroed charges represent events with only noise.}
+	\label{fig:ChargeCut1}
+\end{minipage}
+\end{figure}
 
 \section*{3.3 Data Analysis: Device Combination}
-The \textit{MultiDeviceStudy\_PicosilMCP} code currently outputs 12 $\Delta t$ histograms. 
-The simplest are the PicoSil center pixel and the single-channel Photonis MCP histograms (Figures 1 and 2). 
+The \textit{MultiDeviceStudy\_PicosilMCP} code generates many variations of TOF combination histograms. 
+The simplest are the HGC center pixel and the single-channel Photonis MCP histograms (Figures 1 and 2). 
 Another histogram (Figure 3) is the average value of the center pixel and the MCP $\Delta t$ at every event. 
-Figure 4 adds in the other 6 pixels of the inner ring of the PicoSil, and weights everything by taking the arithmetic average of the $\Delta t$’s for the devices that passed the cuts.
+Figure 4 adds in the other 6 pixels of the inner ring of the HGC layer, and weights everything by taking the arithmetic average of the $\Delta t$’s for the devices that passed the cuts.
 
-	Another histogram (Figure 5) averages all 7 of the PicoSil $\Delta t$’s equally, and then averages that value with the MCP:
+	Another histogram (Figure 5) averages all 7 of the HGC pixel $\Delta t$’s equally, and then averages that value with the MCP:
 
 \[
-\Delta t_i = \dfrac{ \Delta t_{MCP_i} }{2} + \dfrac{\sum \Delta t_{PicoSil_i} }{14}
+\Delta t_i = \dfrac{ \Delta t_{MCP_i} }{2} + \dfrac{\sum_{j=1}^N \Delta t_{HGC_{ij}} }{2\times N},\ \ \ event\ i,\ \ N\ HGC\ pixels\ passing\ cuts
 \]
 
-However, the last two combinations (Figures 4/5) are not the best ways to combine the pixels in the PicoSil. 
+However, the last two combinations (Figures 4/5) are not the best ways to combine the pixels in the HGC. 
 Due to the electromagnetic nature of the particle beam, the shower spreads out as it evolves, so more particles will pass through some of the pixels than others \cite{P2}. 
 As it turns out, the center pixel detects significantly more charge than the others, so it should be weighted more. 
-There are two ways to weight the PicoSil combination by the charge: (1) At every event, compute the relative charge in every pixel and use that as the weighting factor, or (2) loop over all events and find the total charge deposited in a pixel over the entire run, then do this for every pixel and use those values as the weights. 
+There are two ways to weight the HGC combination by the charge: (1) At every event, compute the relative charge in every pixel and use that as the weighting factor, or (2) loop over all events and find the total charge deposited in a pixel over the entire run, then do this for every pixel and use those values as the weights. 
 The first method will weigh the pixels differently at every event, whereas the second method will weigh the pixels the same way for every event.
 
 Without including the MCP, two other histograms (Figures 6 and 7) plot the event $\Delta t$’s using the event charge and total run charge weightings:
 
 \[
-\Delta t_i = \sum_{all\ pixels} \Delta t_{PicoSil_i} q_{PicoSil_i} \div \sum_{all\ pixels} q_{PicoSil_i}
+\Delta t_i = 
+\dfrac{ \sum\limits_{all\ pixels} \Delta t_{HGC_i} q_{HGC_i} }
+	{ \sum\limits_{all\ pixels} q_{HGC_i} }
 ,\ \ \ event\ i
 ,\ \ event\ pixel\ charge\ q_i
 \]
 
 \[
-\Delta t_i = \sum_{all\ pixels} \Delta t_{PicoSil_i} Q_{PicoSil} \div \sum_{all\ pixels} Q_{PicoSil}
+\Delta t_i = 
+\dfrac{ \sum\limits_{all\ pixels} \Delta t_{HGC_i} Q_{HGC} }
+	{ \sum\limits_{all\ pixels} Q_{HGC} }
 ,\ \ \ event\ i
 ,\ \ total\ run\ pixel\ charge\ Q
 \]
 
-Utilizing these weighting methods, two other histograms (Figures 8 and 9) weight every pixel in the PicoSil and the MCP by their event charge and their total charge:
+Utilizing these weighting methods, two other histograms (Figures 8 and 9) weight every pixel in the HGC and the MCP by their event charge and their total charge:
 
 \[
 \Delta t_i = 
-\left( \Delta t_{MCP_i} q_{MCP_i} +
-\sum_{all\ pixels} \Delta t_{PicoSil_i} q_{PicoSil_i} \right)
-\div
-\left( q_{MCP_i} +
-\sum_{all\ pixels} q_{PicoSil_i} \right)
+\dfrac{ \Delta t_{MCP_i} q_{MCP_i} +
+	\sum\limits_{all\ pixels} \Delta t_{HGC_i} q_{HGC_i} }
+	{ q_{MCP_i} +
+	\sum\limits_{all\ pixels} q_{HGC_i} }
 \]
 
 \[
 \Delta t_i = 
-\left( \Delta t_{MCP_i} Q_{MCP} +
-\sum_{all\ pixels} \Delta t_{PicoSil_i} Q_{PicoSil} \right)
-\div
-\left( Q_{MCP} +
-\sum_{all\ pixels} Q_{PicoSil} \right)
+\dfrac{ \Delta t_{MCP_i} Q_{MCP} +
+	\sum\limits_{all\ pixels} \Delta t_{HGC_i} Q_{HGC} }
+	{ Q_{MCP} +
+	\sum\limits_{all\ pixels} Q_{HGC} }
 \]
 
-These \textit{would} be the best ways to combine everything if we could guarantee that a particle of a specific energy detected in the PicoSil would give the same charge as a detection in the MCP. 
-However, since the PicoSil and the MCP have different gains that are not known, a better way to weight the histograms would be to do either an event charge or total run charge weighting for the PicoSil $\Delta t$ and then weight that and the MCP $\Delta t$ each by half (Figures 10 and 11).
+These \textit{would} be the best ways to combine everything if we could guarantee that a particle of a specific energy detected in the HGC would give the same charge as a detection in the MCP. 
+However, since the HGC and the MCP have different gains that are not known, a better way to weight the histograms would be to do either an event charge or total run charge weighting for the HGC $\Delta t$ and then weight that and the MCP $\Delta t$ each by half (Figures 10 and 11).
 
 \[
 \Delta t_i = 
 \dfrac{
-\left[ \sum_{pixels} \Delta t_{PicoSil_i} q_{PicoSil_i}
+\left[ \sum\limits_{all\ pixels} \Delta t_{HGC_i} q_{HGC_i}
 \div
-\sum_{pixels} q_{PicoSil_i}
+\sum\limits_{all\ pixels} q_{HGC_i}
 \right]
 + \Delta t_{MCP_i} 
 } {2}
@@ -228,9 +260,9 @@ However, since the PicoSil and the MCP have different gains that are not known, 
 \[
 \Delta t_i = 
 \dfrac{
-\left[ \sum_{pixels} \Delta t_{PicoSil_i} Q_{PicoSil}
+\left[ \sum\limits_{all\ pixels} \Delta t_{HGC_i} Q_{HGC}
 \div
-\sum_{pixels} Q_{PicoSil}
+\sum\limits_{all\ pixels} Q_{HGC}
 \right]
 + \Delta t_{MCP_i} 
 } {2}
@@ -243,9 +275,6 @@ Note: my code fits every histogram 2$\times$RMS around each peak with a Gaussian
 
 %%% INCLUDE 11 FIGURES %%%
 
-Note: Figure 3.1.1 and Figure 3.3.1 both appear to be a histogram of $\Delta t$ values of the center PicoSil pixel for runs 65-83. 
-Yet, Figure 3.1.1 gives $\sigma=23$ ps and Figure 3.3.1 gives $\sigma=25$ ps, which do not agree. 
-This is because – even though the SiPad is not used in generating the $\Delta t$ values for Figure 3.1.1 – I am cutting on the SiPad amplitude, which excludes some events in Figure 3.1.1.
 
 \setcounter{section}{3}
 \section{Preliminary Results}
@@ -284,7 +313,7 @@ look at \ref{peaks1} and \ref{peaks2}.
 \end{comment}
 
 
-
+\newpage
 \printbibliography
 
 \end{document}
