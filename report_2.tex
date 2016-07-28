@@ -57,7 +57,7 @@ The peak $\sigma$ parameter is denoted the time resolution.
 
 \begin{figure}
 \centering
-\begin{minipage}{.5\textwidth}
+\begin{minipage}[t]{.5\textwidth}
 	\centering
 	\includegraphics[scale=0.5]{HGC.png}
 	\caption{A depiction of the innermost 7 pixels of the HGC layer. 
@@ -86,23 +86,57 @@ A 1-D histogram is then filled event-by-event with the $\Delta t$ values.
 In an ideal world with perfect detectors and no variation in each event, the histogram would be a Dirac delta function with a time resolution of zero. 
 However, due to detector jitter, the signal-to-noise ratio and the particle shower development in the material will vary event-by-event, resulting in Gaussian histograms \cite{P2}. 
 After fitting the histogram to a Gaussian, the $\sigma$ parameter gives the time resolution of the detector/pixel. 
-If weighted correctly, combining the HGC pixels’ $\Delta t$ histograms will result in a combined histogram with better time resolution (smaller $sigma$). 
+If weighted correctly, combining the HGC pixels’ $\Delta t$ histograms will result in a combined histogram with better time resolution (smaller $\sigma$). 
 This improvement is due to the combination of non-overlapping information about the shower size and development in each of the detectors.
 
 Because there are also multiple devices along the beam line as well as multiple HGC pixels, the analysis of the coplanar HGC pixels has been called \textit{transverse analysis}, and the analysis of multiple devices \textit{longitudinal analysis}. 
-This report shall deal mainly with the longitudinal analysis, analyzing the improvement in the time resolution when taking the HGC layer, single-channel Photonis MCP, and SiPad into account. 
-However since it is best to use the time resolution from the entire HGC layer, much of the transverse analysis will be done as well. 
-Due to re-cabling the wires of the detectors into different groups between runs 52 and 53, I wrote a longitudinal analysis code for the initial setup (with the initial array values) and then another code for the revised setup (the only difference in the codes being which array elements I called). 
-Additionally, the SiPad has very prominent noise for all of the runs I have analyzed so far and actually substantially deteriorates the combined detector time resolution. 
-For example, Figures 1 and 2 give the time of flight ($\Delta t$) histograms for runs 65-83 (same configuration) for the PicoSil center pixel and the MCP, along with their Gaussian fit $\sigma$ parameter. 
-Figure 3 gives the same but for the SiPad. 
-Figure 4 is one of the possible combination histograms (depending on how the individual $\Delta t$ histograms are combined; more about this later). 
+This report shall deal mainly with the longitudinal analysis: analyzing the improvement in the time resolution when taking the HGC layer, single-channel Photonis MCP, and SiPad into account. 
+However since it is best to use the time resolution from the entire HGC layer, much of the transverse analysis will be included as well. 
+Due to re-cabling the wires of the detectors into different groups between runs 52 and 53, multiple longitudinal analysis codes were written for each setup. 
+Additionally, the silicon pad has noise dominating for most of the runs, and substantially deteriorates the combined detector time resolution. 
+For example, Figures \ref{fig:Center} and \ref{fig:MCP} give the time of flight ($\Delta t$) histograms for runs 65-83 (same configuration) for the HGC center pixel and the Photonis MCP, along with their Gaussian fit $\sigma$ parameter. 
+The Gaussian fit used the log-likelihood maximization method.
+Figure \ref{fig:SiPad} gives the TOF histogram for the silicon pad. 
+Figure \ref{fig:wctc} is one of the possible combination histograms (depending on how the individual $\Delta t$ histograms are combined; more about this later). 
 Clearly the combined histogram improves the SiPad resolution by about 4 times, but it is 3-4 times \textit{worse} than the individual resolutions of the PicoSil and MCP. 
 Additionally, the SiPad histogram is peaked, but certainly not Gaussian. 
 Note: The PicoSil distribution is also clearly not perfectly Gaussian because it has a tail on the right side, but it is approximately Gaussian (there was maybe an issue with the run, the electronics, or the imposed cut), and the fit $\sigma$ takes it into account. 
 Thus, because it is usually more favorable to simply exclude the SiPad, I also created variations of the code that does not account for the SiPad.
 
-%%% INSERT FOUR FIGURES HERE %%%
+\begin{figure}
+\centering
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{deltaTCenter.pdf}
+	\caption{TOF of the HGC Center Pixel}
+	\label{fig:Center}
+\end{minipage} \hfill
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{deltaTMCP.pdf}
+	\caption{TOF of the Single-Channel Photonis MCP}
+	\label{fig:MCP}
+\end{minipage}
+\end{figure}
+
+% The following 2 plots are actually a bit out of date, and were combined with slightly
+% different versions of the two above plots. Main point is still correct. Would need to
+% update the below plots for any final paper.
+\begin{figure}
+\centering
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{deltaTSiPad.pdf}
+	\caption{TOF of the Silicon Pad}
+	\label{fig:SiPad}
+\end{minipage} \hfill
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{deltaTWeightsCorrected_totalcharge.pdf}
+	\caption{TOF of the HGC Center Pixel, Photonis, and Silicon Pad Combined with Total Device Charge Weighting}
+	\label{fig:wctc}
+\end{minipage}
+\end{figure}
 
 Therefore, because of the change in cabling and the noise in the SiPad, I created for longitudinal analysis codes: \textit{MultiDeviceStudy}, \textit{MultiDeviceStudy\_InitialWiring}, \textit{MultiDeviceStudy\_PicosilMCP}, and \textit{MultiDeviceStudy\_InitialWiring\_PicosilMCP}. 
 Because the most applicable file is \textit{MultiDeviceStudy\_PicosilMCP}, I have made it more extensive than the other three by incorporating all of the ring 1 pixels (the 6 pixels surrounding the center pixel) in the analysis. 
@@ -232,13 +266,13 @@ I cannot really plan out how my analysis will evolve until I finish looking at t
 \begin{comment}
 \begin{figure}
 \centering
-	\begin{minipage}{.5\textwidth}
+	\begin{minipage}[t]{.5\textwidth} % [t] aligns at top of minipage instead of centering it
 	\centering
 	\includegraphics[width=\linewidth]{deltaTMCPSmear.pdf}
 	\caption{Caption goes here}
 	\label{peaks1}
 	\end{minipage}\hfill
-	\begin{minipage}{.5\textwidth}
+	\begin{minipage}[t]{.5\textwidth}
 	\centering
 	\includegraphics[width=\linewidth]{deltaTMCPSmear.pdf}
 	\caption{Caption goes here}
