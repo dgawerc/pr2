@@ -247,7 +247,7 @@ Because there are far more events passing cuts -- and with a higher charge -- in
 Both types of fits are accomplished by maximizing the log-likelihood in order to avoid the biasing of the $\chi^2$ minimization fit for low-event bins.
 Mathematically, this method is represented by the same formula as the total charge method, letting $Q_k$ represent the detector's MPV, instead of total charge.
 
-\section{Time of Flight Plots}
+\section{Time of Flight Plots: Simple Combinations}
 Now that all the different combination methods have been described, understanding the resultant plots is now possible. 
 In order to show results in the simplest manner, this section will only use plots coming from 1 data set with the same configuration. 
 Specifically, the results in this section will all be for runs 104-116 excluding runs 111-114, which have a test beam of 32 GeV electrons, and a tungsten (W) absorber 1mm in front of the HGC layer (it may help to recall the setup from Figure \ref{fig:setup}).
@@ -318,122 +318,61 @@ Mathematically, these methods would be given by,
 	\sum\limits_{all\ pixels} Q_{HGC} }
 \]
 
-Figure \ref{fig:HGC_MCP_event_total_104} gives the TOF histograms using these combination methods.
+Figure \ref{fig:HGC_MCP_event_total_104} gives the TOF histograms using these combination methods. While the total charge method time resolution shows an undeniable improvement, the event charge method time resolution of 14.2 ps is better than any HGC layer combination (Figure \ref{fig:HGC_event_total_MPV_104}) but worse than the resolution of just the Photonis (Figure \ref{fig:center_MCP_104}).
 
 \begin{figure}[h]
 \centering
+\begin{minipage}[t]{.64\textwidth}
 	\includegraphics[width=.49\textwidth]{deltaT_PicoSil_MCP_EventCharge104.pdf}
-	\includegraphics[width=.49\textwidth]{deltaT_PicoSil_MCP_TotalCharge104.pdf}
+	\includegraphics[width=.5\textwidth]{deltaT_PicoSil_MCP_TotalCharge104.pdf}
 	\caption{TOF histograms of the HGC pixels and Photonis MCP, using event (left) and total (right) charge weighting. }
 	\label{fig:HGC_MCP_event_total_104}
+\end{minipage} \hfill
+\begin{minipage}[t]{.32\textwidth}
+	\includegraphics[width=\textwidth]{deltaT_Center_MCP_Equal104.pdf}
+	\caption{TOF histogram weighting $\Delta t_{Center}$ and $\Delta t_{Photonis}$ by $\frac{1}{2}$.}
+	\label{fig:CenterMCPEqual104}
+\end{minipage}
+\end{figure}
+
+It turns out, however, that an HGC/Photonis combination using just charges is not the most accurate way to weight each detector. 
+The first indication that there may be a smarter method comes from the equal weighting combination of the HGC center pixel (left Figure \ref{fig:center_MCP_104}; 15.9 ps) and the Photonis. 
+Figure \ref{fig:CenterMCPEqual104} shows this combination. 
+While the total charge-combined HGC layer has a better time resolution than the center pixel, the latter's equal combination with the Photonis is significantly better (11.4 ps compared to 12.1 ps). 
+The equal weighting between devices is better than one of the charge weightings because it approximates that the same amount of charge flows into both detectors.
+Even though the charge is not actually equal, this approximation is better than using the charge weighting \textit{because the relative gain of the HGC and Photonis is not known}. 
+Put another way, a particle of a specific energy detected in the HGC would not return the same charge as a detection in the Photonis. 
+Therefore, a better way to weight the $\Delta t$ values would be to do either an event charge, total charge, or charge MPV weighting for the HGC pixel $\Delta t$'s, then weight that value and the Photonis $\Delta t$ equally (Figure \ref{fig:HGCMCP_event_total_MPV_104}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.32\textwidth]{deltaT_PicoSilEventCharge_MCP_Equal104.pdf}
+	\includegraphics[width=.32\textwidth]{deltaT_PicoSilTotalCharge_MCP_Equal104.pdf}
+	\includegraphics[width=.32\textwidth]{deltaT_PicoSilLandauCharge_MCP_Equal104.pdf}
+	\caption{TOF histogram weighting $\Delta t_{HGC}$ and $\Delta t_{Photonis}$ by $\frac{1}{2}$, with $\Delta t_{HGC}$ computed via event (left), total (middle), and MPV (right) charge weightings.}
+	\label{fig:HGCMCP_event_total_MPV_104}
 \end{figure}
 
 
+
+
+\section{Time of Flight Between HGC and Photonis}
+\section{SKIROC2 Emulation}
+\subsection{Background}
+\subsection{500 ps Smear}
+\subsubsection{Add Pixels Individually: Use All Pixels}
+\subsubsection{Add Pixels Individually: Exclude Center Pixel}
+\subsection{50 ps Smear}
+\subsubsection{Add Pixels Individually: Use All Pixels}
+\subsubsection{Add Pixels Individually: Exclude Center Pixel}
+\subsection{Minimize $\chi^2$ or Maximize Log-Likelihood}
+-----------------Move this subsection somewhere more appropriate----------------
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Stopped my revisions here \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
-
-Another histogram (Figure \ref{fig:CenterMCPEqual}) is the average value of the center pixel and the MCP $\Delta t$ at every event. 
-Figure 4 adds in the other 6 pixels of the inner ring of the HGC layer, and weights everything by taking the arithmetic average of the $\Delta t$’s for the pixels that passed the cuts.
-
-	The histogram  in Figure 5 averages all 7 of the HGC pixel $\Delta t$’s equally, and then averages that value with the MCP:
-
-\[
-\Delta t_i = \dfrac{ \Delta t_{MCP_i} }{2} + \dfrac{\sum\limits_{j=1}^N \Delta t_{HGC_{ij}} }{2\times N},\ \ \ event\ i,\ \ N\ HGC\ pixels\ passing\ cuts
-\]
-
-However, the last two combinations (Figures 4/5) are not the best ways to combine the pixels in the HGC. 
-Due to the electromagnetic nature of the particle beam, the shower spreads out as it evolves, so more particles will pass through some of the pixels than others \cite{P2}. 
-As it turns out, the center pixel detects significantly more charge than the others, so it should be weighted more. 
-There are two ways to weight the HGC combination by the charge: (1) At every event, compute the relative charge in every pixel and use that as the weighting factor, or (2) loop over all events and find the total charge deposited in a pixel over the entire run, then do this for every pixel and use those values as the weights. 
-The first method will weigh the pixels differently at every event, whereas the second method will weigh the pixels the same way for every event.
-
-Without including the MCP, two other histograms (Figures 6 and 7) plot the event $\Delta t$’s using the event charge and total run charge weightings:
-
-\[
-\Delta t_i = 
-\dfrac{ \sum\limits_{all\ pixels} \Delta t_{HGC_i} q_{HGC_i} }
-	{ \sum\limits_{all\ pixels} q_{HGC_i} }
-,\ \ \ event\ i
-,\ \ event\ pixel\ charge\ q_i
-\]
-
-\[
-\Delta t_i = 
-\dfrac{ \sum\limits_{all\ pixels} \Delta t_{HGC_i} Q_{HGC} }
-	{ \sum\limits_{all\ pixels} Q_{HGC} }
-,\ \ \ event\ i
-,\ \ total\ run\ pixel\ charge\ Q
-\]
-
-Utilizing these weighting methods, two other histograms (Figures 8 and 9) weight every pixel in the HGC and the MCP by their event charge and their total charge:
-
-\[
-\Delta t_i = 
-\dfrac{ \Delta t_{MCP_i} q_{MCP_i} +
-	\sum\limits_{all\ pixels} \Delta t_{HGC_i} q_{HGC_i} }
-	{ q_{MCP_i} +
-	\sum\limits_{all\ pixels} q_{HGC_i} }
-\]
-
-\[
-\Delta t_i = 
-\dfrac{ \Delta t_{MCP_i} Q_{MCP} +
-	\sum\limits_{all\ pixels} \Delta t_{HGC_i} Q_{HGC} }
-	{ Q_{MCP} +
-	\sum\limits_{all\ pixels} Q_{HGC} }
-\]
-
-These \textit{would} be the best ways to combine everything if we could guarantee that a particle of a specific energy detected in the HGC would give the same charge as a detection in the MCP. 
-However, since the HGC and the MCP have different gains that are not known, a better way to weight the histograms would be to do either an event charge or total run charge weighting for the HGC $\Delta t$ and then weight that and the MCP $\Delta t$ each by half (Figures 10 and 11).
-
-\[
-\Delta t_i = 
-\dfrac{
-\left[ \sum\limits_{all\ pixels} \Delta t_{HGC_i} q_{HGC_i}
-\div
-\sum\limits_{all\ pixels} q_{HGC_i}
-\right]
-+ \Delta t_{MCP_i} 
-} {2}
-\]
-
-\[
-\Delta t_i = 
-\dfrac{
-\left[ \sum\limits_{all\ pixels} \Delta t_{HGC_i} Q_{HGC}
-\div
-\sum\limits_{all\ pixels} Q_{HGC}
-\right]
-+ \Delta t_{MCP_i} 
-} {2}
-\]
-
-I have still yet to determine which of the event charge or total run charge weightings is optimal. 
-Note: my code fits every histogram 2$\times$RMS around each peak with a Gaussian.
-
-\textit{ The following figures were generated through running my analysis code on runs 65-83. }
-
-%%% INCLUDE 9 FIGURES %%%
-
-\begin{figure}
-\centering
-\begin{minipage}[t]{.49\textwidth}
-	\centering
-	\includegraphics[width=\textwidth]{deltaT_Center_MCP_Equal.pdf}
-	\caption{TOF histogram weighting $\Delta t_{Center}$ and $\Delta t_{Photonis}$ by $\frac{1}{2}$.}
-	\label{fig:CenterMCPEqual}
-\end{minipage} \hfill
-\begin{minipage}[t]{.49\textwidth}
-	\centering
-	\includegraphics[width=\textwidth]{ChargeCut1.pdf}
-	%\caption{The Photek 240 MCP charge distribution with the cut in effect. Zeroed charges represent events with only noise.}
-	%\label{fig:ChargeCut1}
-\end{minipage}
-\end{figure}
 
 
 \section{Preliminary Results}
