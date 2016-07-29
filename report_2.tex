@@ -391,15 +391,76 @@ This smearing can be used to test whether combining detectors of similar time re
 \end{figure}
 
 \subsection{50 ps Smear}
-\subsubsection{Add Pixels Individually: Use All Pixels}
+\subsubsection{Add Pixels Individually: All Pixels}
+After smearing each pixel in the HGC by 50 ps, there are many ways to combine the $\Delta t$ values. 
+Before smearing, any form of equal weighting led to worse time resolutions, because the center pixel should have been weighted more.
+However, as seen in Figure \ref{fig:mathematica_plot}, a 50 ps smear makes the time resolutions of the detectors closer. 
+Yet, the inner ring pixels initially had time resolutions near 70-80 ps, so they still may not help as much as if they were the same.
 
+In this case, it may still be useful to combine with some form of charge weighting, since the center pixel most likely should be weighted relatively heavily.
+This way, the lower time resolution of the center pixel is emphasized.
+However, equal weighting becomes a more valid method for larger smears, since the correlation between charge and a small $\sigma$ disappears.
+
+Furthermore, it is interesting to observe how the time resolution will improve with the addition of each pixel. 
+This analysis can help determine how many pixels can be added before the time resolution stops improving.
+Because only a handful of event cuts are passed by all 6 inner ring HGC pixels and the center pixel, adding pixels should not be able to reduce the events.
+In order to maintain a high event number, when two pixels X and Y are added together, the union of the events they pass -- instead of the intersection -- shall be the new number of events.
+The intersection of passed events shall be the combined $\Delta t$'s, and the remaining events shall simply use the individual $\Delta t$.
+
+Each additional pixel shall be combined in decreasing order of number of events passed, since those detectors have the larger chance of improving the time resolution.
+Figure \ref{} shows the addition of each smeared pixel using an equal weighting method. 
+Figure \ref{} shows the smeared pixel addition using the charge MPV weighting method, since it appeared to be the best method/equally as good as the total charge method.
+
+%%% INCLUDE FIGURE WITH 7 PLOTS HERE %%% 3 rows: 2-3-2
+
+%%% INCLUDE FIGURE WITH 7 PLOTS HERE %%%
 
 \subsubsection{Add Pixels Individually: Exclude Center Pixel}
+The improvement in the previous section is not good enough to reach the pre-smearing time resolutions. 
+Perhaps combining the inner ring pixels without incorporating the center pixel will show a bigger improvement ($\sigma_0-\sigma_f$), due to combining detectors of similar time resolution. 
+Figure \ref{} shows the addition of each smeared pixel using an equal weighting method.
 
+%%% INCLUDE FIGURE WITH 6 PLOTS HERE %%%
 
 \subsection{500 ps Smear}
-\subsubsection{Add Pixels Individually: Use All Pixels}
+\subsubsection{Add Pixels Individually: All Pixels}
+In order to illustrate the strength of the equal weighting method over charge-based methods at high smear values, a 500 ps Gaussian smearing is applied to each pixel.
+Here the charge should have no correlation to the time resolution of each detector.
+Additionally, the center pixel should have the same weighting factor as any other pixel, since it has equally as bad of a resolution.
 
+Figure \ref{fig:500psAll} shows the addition of each smeared pixel using an equal weighting method.
+
+\begin{figure}[h]
+\centering
+	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_1_Pixels.pdf}
+	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_2_Pixels.pdf}
+	
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_3_Pixels.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_4_Pixels.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_5_Pixels.pdf}
+	
+	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_6_Pixels.pdf}
+	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_7_Pixels.pdf}
+	\caption{Adding in pixels in decreasing events order.
+		Each has been smeared by 500 ps.}
+	\label{fig:500psAll}
+\end{figure}
+
+In order to simulate another HGC layer, the Photonis MCP was smeared to 330 ps and combined with the $\Delta t$ values that were used to populate the final histogram in Figure \ref{fig:500psAll}. The Photonis TOF and combined TOF histograms are given in Figures \ref{fig:500psMCP} and \ref{fig:500psHGCMCP}.
+
+\begin{figure}[h]
+\centering
+\begin{minipage}[t]{0.49\textwidth}
+	\includegraphics[width=\linewidth]{SKIROC/deltaTMCPSmear.pdf}
+	\caption{TOF histogram for Photonis MCP smeared to 330 ps.}
+	\label{fig:500psMCP}
+\end{minipage} \hfill
+\begin{minipage}[t]{0.49\textwidth}
+	\includegraphics[width=\linewidth]{SKIROC/SKIROC_1_Pixels.pdf}
+	\caption{TOF histogram, equally weighting smeared HGC layer and Photonis.}
+	\label{fig:500psHGCMCP}
+\end{minipage}
+\end{figure}
 
 \subsubsection{Add Pixels Individually: Exclude Center Pixel}
 
