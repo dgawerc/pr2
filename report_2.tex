@@ -342,7 +342,8 @@ While the total charge-combined HGC layer has a better time resolution than the 
 The equal weighting between devices is better than one of the charge weightings because it approximates that the same amount of charge flows into both detectors.
 Even though the charge is not actually equal, this approximation is better than using the charge weighting \textit{because the relative gain of the HGC and Photonis is not known}. 
 Put another way, a particle of a specific energy detected in the HGC would not return the same charge as a detection in the Photonis. 
-Therefore, a better way to weight the $\Delta t$ values would be to do either an event charge, total charge, or charge MPV weighting for the HGC pixel $\Delta t$'s, then weight that value and the Photonis $\Delta t$ equally (Figure \ref{fig:HGCMCP_event_total_MPV_104}).
+Therefore, a better way to weight the $\Delta t$ values would be to do either an event charge, total charge, or charge MPV weighting for the HGC pixel $\Delta t$'s, then weight that value equally with the Photonis $\Delta t$ (Figure \ref{fig:HGCMCP_event_total_MPV_104}). 
+While the event charge weighting again gives the worst time resolution, the other two methods have a time resolution that is essentially the same as the HGC center pixel equally weighted with the Photonis MCP. 
 
 \begin{figure}[h]
 	\centering
@@ -353,10 +354,14 @@ Therefore, a better way to weight the $\Delta t$ values would be to do either an
 	\label{fig:HGCMCP_event_total_MPV_104}
 \end{figure}
 
+This lack of improvement is most likely due to the relatively great time resolution of the central pixel compared to the inner ring pixels, which have a $\sigma$ that is around 4 times larger. 
+Adding in the 6 ring pixels the time resolution only improved from $15.9 \pm 0.4$ ps to $15.5 \pm 0.4$ ps.
+This improvement is small because the worse time resolutions of the outside pixels cannot contribute much to the already-good center pixel.
+In this experiment, the test beam was focused onto the center pixel, which improved its time resolution compared to the other pixels. 
+At the LHC, one pixel will not always be favored over the others in bunch crossings, and the most energetic part of the interaction may not interact with one of the pixels, so the pixel resolutions are expected to be similar.
+While it does not seem useful in this experiment to combine the ring pixels, perhaps if they had a similar time resolution, adding them would lead to bigger improvements.
 
 
-
-\section{Time of Flight Between HGC and Photonis}
 \section{SKIROC2 Emulation}
 \subsection{Background}
 \subsection{500 ps Smear}
@@ -366,32 +371,20 @@ Therefore, a better way to weight the $\Delta t$ values would be to do either an
 \subsubsection{Add Pixels Individually: Use All Pixels}
 \subsubsection{Add Pixels Individually: Exclude Center Pixel}
 \subsection{Minimize $\chi^2$ or Maximize Log-Likelihood}
------------------Move this subsection somewhere more appropriate----------------
+------------------------Move this subsection somewhere more appropriate-----------------------
 
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\section{Time of Flight Between HGC and Photonis}
 
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Stopped my revisions here \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
-
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
-
-
-\section{Preliminary Results}
+\section{Preliminary Results and Further Research}
 I am currently using my analysis code for the HGC and MCP to look at how these time resolutions change for different configurations (i.e. absorber type, spacing, and thickness; beam energy; etc). 
-So far, I have only looked at the following configurations:
 
-%%% INCLUDE TABLE HERE %%%
+The next steps in the data analysis include...
 
-The last run is a reminder that the cuts should be edited for every run in order to correctly select the proper data. 
-There may also be a beam energy dependence for the value of the cuts. 
-So far, I have determined that the following cuts are the best for the above runs:
 
-%%% INCLUDE TABLE HERE %%%
 
-As far as the rest of my research goes: I am going back to Caltech at the end of next week to continue my data analysis. 
-I cannot really plan out how my analysis will evolve until I finish looking at the different runs, but then I will most likely take my results to someone in the Caltech Precision Timing group and figure out the next steps of my research. 
-
+%%% The following is a multi-figure example %%%
 \begin{comment}
-\begin{figure}
+\begin{figure}[h]
 \centering
 	\begin{minipage}[t]{.5\textwidth} % [t] aligns at top of minipage instead of centering it
 	\centering
