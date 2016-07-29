@@ -359,24 +359,60 @@ Adding in the 6 ring pixels the time resolution only improved from $15.9 \pm 0.4
 This improvement is small because the worse time resolutions of the outside pixels cannot contribute much to the already-good center pixel.
 In this experiment, the test beam was focused onto the center pixel, which improved its time resolution compared to the other pixels. 
 At the LHC, one pixel will not always be favored over the others in bunch crossings, and the most energetic part of the interaction may not interact with one of the pixels, so the pixel resolutions are expected to be similar.
-While it does not seem useful in this experiment to combine the ring pixels, perhaps if they had a similar time resolution, adding them would lead to bigger improvements.
+While it does not seem useful in this experiment to add in the ring pixels, perhaps if they had a similar time resolution, adding them would lead to bigger improvements.
+This statement is tested below.
 
+Note that the time resolution values and their relative sizes given in the plots above are for this specific configuration.
+Analyzing other runs will lead to changes in these values. 
+The absorber thickness, distance, and type, and the beam energy contribute to the varying values of $\sigma$.
 
 \section{SKIROC2 Emulation}
+For calorimetry at CMS, the SKIROC2 ASIC reads out the pulse data from the detectors.
+Sacrificing accuracy for speed, the SKIROC2 chip has a digital jitter affecting the pulse time values, which places a lower bound on $\sigma$. 
+
 \subsection{Background}
-\subsection{500 ps Smear}
-\subsubsection{Add Pixels Individually: Use All Pixels}
-\subsubsection{Add Pixels Individually: Exclude Center Pixel}
+This jitter has previously been observed to model a Gaussian distribution of $\sigma=50$ ps, centered around 0.
+Thus, if a detector consistently measured pulses at time $X$, then plotting all of these time values would be essentially a Dirac Delta function.
+If these values were then read out by the SKIROC2 chip, then for enough events, plotting these new values would give a Gaussian of $\sigma = 50$ ps, $\mu = X$.
+However, as explained above, the initial time values are already Gaussian distributed, so reading the data out would return a convolution of the two distributions. 
+In other words, the new distribution will be a Gaussian of $\sigma > 50$ ps.
+
+In order to simulate how multiple HGC layers with multiple pixels at CMS can improve the time resolution, each pixel's pulse time can be \textit{smeared} by 50 ps, according to a random sampling from a Gaussian distribution.
+This new smeared time can then be used to calculate the $\Delta t$ value by subtracting it from the Photek's pulse time, which is not smeared.
+
+From Figure \ref{fig:mathematica_plot}, it can be observed that pixels with different initial $\sigma$ values will approach the same value when smeared by large amounts. 
+This smearing can be used to test whether combining detectors of similar time resolution will be able to significantly improve the overall time resolution.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.75\textwidth]{mathematica_plot.pdf}
+	\caption{After being smeared by a large amount, detectors with different time resolutions (15 ps, 50 ps, 75 ps) approach the same value. Plotted in Wolfram Mathematica.}
+	\label{fig:mathematica_plot}
+\end{figure}
+
 \subsection{50 ps Smear}
 \subsubsection{Add Pixels Individually: Use All Pixels}
+
+
 \subsubsection{Add Pixels Individually: Exclude Center Pixel}
+
+
+\subsection{500 ps Smear}
+\subsubsection{Add Pixels Individually: Use All Pixels}
+
+
+\subsubsection{Add Pixels Individually: Exclude Center Pixel}
+
+
 \subsection{Minimize $\chi^2$ or Maximize Log-Likelihood}
 ------------------------Move this subsection somewhere more appropriate-----------------------
+
+possibly make it subsection 3.4
 
 \section{Time of Flight Between HGC and Photonis}
 
 \section{Preliminary Results and Further Research}
-I am currently using my analysis code for the HGC and MCP to look at how these time resolutions change for different configurations (i.e. absorber type, spacing, and thickness; beam energy; etc). 
+I am currently using my analysis code for the HGC and Photonis MCP to look at how these time resolutions change for different configurations (i.e. absorber type, spacing, and thickness; beam energy; etc). 
 
 The next steps in the data analysis include...
 
