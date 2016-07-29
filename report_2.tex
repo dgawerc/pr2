@@ -38,11 +38,22 @@ In the front of the setup, a scintillator crystal and PMT are used as a trigger.
 Depending on the configuration, there are a few radiation lengths ($X_0$) of either lead or tungsten absorbers behind the PMT in order to spread out and propagate the particle shower and produce more secondary electrons and photons. 
 A depiction of the setup is given in Figure \ref{fig:setup}.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{setup.png}
 	\caption{A typical experiment configuration.}
 	\label{fig:setup}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{minipage}[t]{.5\textwidth}
+	\centering
+	\includegraphics[scale=0.5]{HGC.png}
+	\caption{A depiction of the innermost 7 pixels of the HGC layer. 
+	The actual board has more than 7 pixels in a single layer.}
+	\label{fig:HGC}
+\end{minipage}
 \end{figure}
 
 The High Granularity Calorimeter (or PicoSil when referring to a single pixel’s readout that has been optimized for timing) layer has an array of separated silicon pixels, in a hexagonal honeycomb geometry \cite{P2}. 
@@ -54,17 +65,6 @@ Because the readout board for all the detectors is divided into 4 groups, which 
 Specifically, the time taken for the particle to travel from a device to the reference Photek - the time of flight – is represented by $\Delta t$. 
 In the data analysis, the $\Delta t$ values over all events in the run (with certain \textit{bad} events excluded) are combined in a histogram, forming a Gaussian peak. 
 The peak $\sigma$ parameter is denoted the time resolution.
-
-\begin{figure}
-\centering
-\begin{minipage}[t]{.5\textwidth}
-	\centering
-	\includegraphics[scale=0.5]{HGC.png}
-	\caption{A depiction of the innermost 7 pixels of the HGC layer. 
-	The actual board has more than 7 pixels in a single layer.}
-	\label{fig:HGC}
-\end{minipage}
-\end{figure}
 
 There is a 64-channel and a single-channel Photonis MCP. 
 The 64-channel Photonis was not present for most runs, and the single-channel Photonis was instead used. 
@@ -106,7 +106,7 @@ Therefore, because of the change in cabling and the noise in the silicon pad, th
 Because the most applicable file is \textit{MultiDeviceStudy\_PicosilMCP}, it is more extensive than the others, incorporating all of the ring 1 pixels (the 6 pixels surrounding the center pixel; refer to Figure \ref{fig:HGC}) in the analysis. 
 Thus, the code implements transverse analysis of the HGC as well as longitudinal analysis by adding the Photonis MCP.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \begin{minipage}[t]{.49\textwidth}
 	\centering
@@ -125,7 +125,7 @@ Thus, the code implements transverse analysis of the HGC as well as longitudinal
 % The following 2 plots are actually a bit out of date, and were combined with slightly
 % different versions of the two above plots. Main point is still correct. Would need to
 % update the below plots for any final paper.
-\begin{figure}
+\begin{figure}[h]
 \centering
 \begin{minipage}[t]{.49\textwidth}
 	\centering
@@ -157,45 +157,115 @@ Figure \ref{fig:AmpCut1} shows the histogram of the amplitudes with only the eve
 Figures \ref{fig:ChargeCut0} and \ref{fig:ChargeCut1} show the same methodology being applied to the charge distribution, with a cut at $2\times\sqrt{10}$ pC. 
 Similar cuts were made in the HGC pixels and Photonis MCP. 
 
-\begin{figure}
+\begin{figure}[t]
 \centering
 \begin{minipage}[t]{.49\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{AmpCut0.pdf}
-	\caption{Pulse peak amplitude distribution for the Photek 240 MCP. The $\sqrt{10}$ factor accounts for a 6 dB attenuator.}
+	\caption{Pulse peak amplitude distribution for the Photek 240 MCP. 
+		The $\sqrt{10}$ factor accounts for a 6 dB attenuator.}
 	\label{fig:AmpCut0}
 \end{minipage} \hfill
 \begin{minipage}[t]{.49\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{AmpCut1.pdf}
-	\caption{The Photek 240 MCP amplitude distribution with the cut in effect. Non-positive amplitudes represent \textit{"bad"} events.}
+	\caption{The Photek 240 MCP amplitude distribution with the cut in effect. 
+		Non-positive amplitudes represent \textit{"bad"} events.}
 	\label{fig:AmpCut1}
 \end{minipage}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
 \centering
 \begin{minipage}[t]{.49\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{ChargeCut0.pdf}
-	\caption{Pulse charge distribution for the Photek 240 MCP. The $\sqrt{10}$ factor accounts for a 6 dB attenuator.}
+	\caption{Pulse charge distribution for the Photek 240 MCP. 
+		The $\sqrt{10}$ factor accounts for a 6 dB attenuator.}
 	\label{fig:ChargeCut0}
 \end{minipage} \hfill
 \begin{minipage}[t]{.49\textwidth}
 	\centering
 	\includegraphics[width=\textwidth]{ChargeCut1.pdf}
-	\caption{The Photek 240 MCP charge distribution with the cut in effect. Zeroed charges represent events with only noise.}
+	\caption{The Photek 240 MCP charge distribution with the cut in effect. 
+		Zeroed charges represent events with only noise.}
 	\label{fig:ChargeCut1}
 \end{minipage}
 \end{figure}
 
 \section*{3.3 Data Analysis: Device Combination}
 The \textit{MultiDeviceStudy\_PicosilMCP} code generates many variations of TOF combination histograms. 
-The simplest are the HGC center pixel and the single-channel Photonis MCP histograms (Figures 1 and 2). 
-Another histogram (Figure 3) is the average value of the center pixel and the MCP $\Delta t$ at every event. 
-Figure 4 adds in the other 6 pixels of the inner ring of the HGC layer, and weights everything by taking the arithmetic average of the $\Delta t$’s for the devices that passed the cuts.
+The simplest are the HGC center pixel and the single-channel Photonis MCP histograms (Figures \ref{fig:Center} and \ref{fig:MCP}). 
+These TOFs are generated without combining the $\Delta t$ values from multiple detectors. 
+There are 4 main ways that have been utilized to combine different detectors.
 
-	Another histogram (Figure 5) averages all 7 of the HGC pixel $\Delta t$’s equally, and then averages that value with the MCP:
+\subsection*{3.3.1 Combination Method: Equal Weighting}
+This weighting method is the most straightforward. 
+If there are 2 devices which all pass the cuts, then their $\Delta t$ values are computed. 
+These 2 $\Delta t$ values are then combined into a single $\Delta t$ value by computing the arithmetic average. 
+This final $\Delta t$ is then used to populate the histogram. 
+Mathematically, this is given by,
+
+\[
+\Delta t_{final} =
+\dfrac{\Delta t_1 + \Delta t_2}{2} .
+\]
+
+It gets slightly harder to compute this $\Delta t_{final}$ when some combinations do not require that \textit{all} detectors pass the cuts, such as when trying to combine the center HGC layer pixel with the 6 inner ring pixels. 
+Because many events have 3 or 4 pixels passing cuts, but only a few events have all 7 passing cuts, the $\Delta t_{final}$ is calculated at every event using whichever pixels were able to pass the cuts. 
+This means the number of $\Delta t_{initial}$'s will vary with event. 
+Mathematically, it can more generally be written:
+
+\[
+\Delta t_{final_i} =
+\dfrac{\sum\limits_{k=1}^N \Delta t_{k_i}} {N} 
+\]
+
+for N detectors passing cuts, where $\Delta t_{k_i}$ represents the $k^{th}$ detector's TOF at event $i$.
+
+\subsection*{3.3.2 Combination Method: Event Charge Weighting}
+This weighting method uses the detected event pulse charge in each device to weight each $\Delta t_{initial}$ value. 
+As illustrated in Figure \ref{fig:ChargeCut1}, the pulse charge varies with event, so the relative weightings between detectors will change on an event-by-event basis. 
+Mathematically, an event's charge weighting is given by,
+
+\[
+\Delta t_{final_i} =
+\dfrac{\sum\limits_{k=1}^N \Delta t_{k_i} q_{k_i} }
+	{\sum\limits_{k=1}^N q_{k_i} }
+\]
+
+for N detectors passing cuts, where $q_{k_i}$ represents the $k^{th}$ detector's charge at event $i$.
+
+\subsection*{3.3.3 Combination Method: Total Charge Weighting}
+Whereas the event charge method weights each detector differently for different events, the total charge method weights each detector the same way over the entire run. 
+Rather than use the event charge, this method sums a detector's event charge for every event in the run, and uses that value as the weighting factor. 
+Mathematically,
+
+\[
+\Delta t_{final_i} =
+\dfrac{\sum\limits_{k=1}^N \Delta t_{k_i} Q_k }
+	{\sum\limits_{k=1}^N Q_k }
+,\ \ \ \ 
+Q_k = \sum_{all\ events\ i} q_{k_i}
+\]
+
+for N detectors passing cuts, where $q_{k_i}$ represents the $k^{th}$ detector's charge at event $i$.
+
+\subsection*{3.3.4 Combination Method: Charge MPV Weighting}
+Like the total charge method, this method also assigns weighting factors to each detector that do not change with the event. 
+This method is additionally only used within the HGC layer, for combining the TOFs of different pixels. 
+Rather than being determined by the total charge detected, this method fits a Landau distribution to the charge distribution histogram of each of the inner ring pixels.
+The peak -- most probable value (MPV) -- of the fit is then used as the weighting factor for the inner ring pixels. 
+Because there are far more events passing cuts -- and with a higher charge -- in the center pixel, the distribution is Gaussian, and its weighting factor is the mean of a Gaussian fit.
+Both types of fits are accomplished by maximizing the log-likelihood.
+
+\subsection*{3.3.5 Combination Time of Flight Plots}
+
+
+Another histogram (Figure \ref{fig:CenterMCPEqual}) is the average value of the center pixel and the MCP $\Delta t$ at every event. 
+Figure 4 adds in the other 6 pixels of the inner ring of the HGC layer, and weights everything by taking the arithmetic average of the $\Delta t$’s for the pixels that passed the cuts.
+
+	The histogram  in Figure 5 averages all 7 of the HGC pixel $\Delta t$’s equally, and then averages that value with the MCP:
 
 \[
 \Delta t_i = \dfrac{ \Delta t_{MCP_i} }{2} + \dfrac{\sum_{j=1}^N \Delta t_{HGC_{ij}} }{2\times N},\ \ \ event\ i,\ \ N\ HGC\ pixels\ passing\ cuts
@@ -273,7 +343,23 @@ Note: my code fits every histogram 2$\times$RMS around each peak with a Gaussian
 
 \textit{ The following figures were generated through running my analysis code on runs 65-83. }
 
-%%% INCLUDE 11 FIGURES %%%
+%%% INCLUDE 9 FIGURES %%%
+
+\begin{figure}
+\centering
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{deltaT_Center_MCP_Equal.pdf}
+	\caption{TOF histogram weighting $\Delta t_{Center}$ and $\Delta t_{Photonis}$ by $\frac{1}{2}$.}
+	\label{fig:CenterMCPEqual}
+\end{minipage} \hfill
+\begin{minipage}[t]{.49\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{ChargeCut1.pdf}
+	%\caption{The Photek 240 MCP charge distribution with the cut in effect. Zeroed charges represent events with only noise.}
+	%\label{fig:ChargeCut1}
+\end{minipage}
+\end{figure}
 
 
 \setcounter{section}{3}
