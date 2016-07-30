@@ -12,6 +12,8 @@
 \usepackage{authblk} %for titles
 \usepackage{verbatim}
 
+\usepackage{caption}
+
 \begin{document}
 
 \author{Daniel Gawerc\\Mentor: Maria Spiropulu\\Co-Mentor: Cristian Peña}
@@ -246,6 +248,8 @@ The peak -- most probable value (MPV) -- of the fit is then used as the weightin
 Because there are far more events passing cuts -- and with a higher charge -- in the center pixel, the distribution is Gaussian, and its weighting factor is the mean of a Gaussian fit.
 Both types of fits are accomplished by maximizing the log-likelihood in order to avoid the biasing of the $\chi^2$ minimization fit for low-event bins.
 Mathematically, this method is represented by the same formula as the total charge method, letting $Q_k$ represent the detector's MPV, instead of total charge.
+
+%%% ADD CHARGE HISTOGRAMS WITH LANDAU FITS OVER THEM
 
 \section{Time of Flight Plots: Simple Combinations}
 Now that all the different combination methods have been described, understanding the resultant plots is now possible. 
@@ -491,8 +495,6 @@ In order to illustrate the strength of the equal weighting method over charge-ba
 Here the charge should have no correlation to the time resolution of each detector.
 Additionally, the center pixel should have the same weighting factor as any other pixel, since it has equally as bad of a resolution.
 
-Figure \ref{fig:500psAll} shows the addition of each smeared pixel using an equal weighting method.
-
 \begin{figure}[h]
 \centering
 	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_1_Pixels500.pdf}
@@ -508,6 +510,27 @@ Figure \ref{fig:500psAll} shows the addition of each smeared pixel using an equa
 		Each has been smeared by 500 ps.}
 	\label{fig:500psAll}
 \end{figure}
+
+Figure \ref{fig:500psAll} shows the addition of each smeared pixel using an equal weighting method. 
+Note that the 7 pixel combination has between 2 and 3 pixels pass the cuts on average. 
+The improvement from the initial time resolution of 500 ps is roughly 1.5, or $\sqrt{2.3}$.
+Mathematically, combining different Gaussians with equal $\sigma$'s, we expect
+
+\[
+\dfrac{A+B+...}{n}
+\rightarrow
+\frac{1}{n}\sqrt{\sigma_A^2+\sigma_B^2+...} =
+\frac{1}{n}\sqrt{n \sigma^2} =
+\frac{1}{\sqrt{n}} \sigma = 
+\sigma'
+\]
+
+\centerline{
+a $\dfrac{1}{\sqrt{n}}$ improvement in the time resolution.
+}
+
+This is close to the results above. 
+Note that this improvement was not seen in the 50 ps smearing because the initial $\sigma$ of the distributions were not equal/similar.
 
 In order to simulate another HGC layer, the Photonis MCP was smeared to 330 ps and combined with the $\Delta t$ values that were used to populate the final histogram in Figure \ref{fig:500psAll}. 
 The Photonis TOF and combined TOF histograms are given in Figures \ref{fig:500psMCP} and \ref{fig:500psHGCMCP}. 
@@ -548,15 +571,88 @@ However if the center pixel initially has a much better time resolution then the
 \end{figure}
 
 \section{Time of Flight Between HGC and Photonis}
+Everything in the previous two sections has been generated from a 32 GeV electron beam run, with 6 $X_0$ of tungsten absorber 1 mm in front of the HGC layer. 
+Different results are obtained when running the analysis code to generate time-of-flight histograms for other experimental configurations.
+Table 1 shows $\sigma$ values from different combinations for a few different runs.
+From the table, some trends are clear. 
+When the beam energy increases, the time resolutions improve. 
+Additionally, when the gap between the absorber and the HGC layer increases, the time resolutions get worse.
 
-\section{Preliminary Results and Further Research}
-I am currently using my analysis code for the HGC and Photonis MCP to look at how these time resolutions change for different configurations (i.e. absorber type, spacing, and thickness; beam energy; etc). 
+\begin{figure}[t]
+\centering
+	\includegraphics[width=\linewidth]{table_longitudinal_analysis.png}
+	\caption*{Table 1:
+	Time resolution results for different configurations.
+	Note that the results in the table have not been updated for the most recent code iteration,
+	so the actual numbers may vary slightly.
+	PicoSil represents HGC layer, and MCP represents Photonis MCP.}
+	%\label{table:results}
+\end{figure}
+%% Insert this as a table at some point, and delete the line using the package <caption>.
 
-The next steps in the data analysis include...
+\begin{figure}[ht]
+\centering
+	\includegraphics[width=0.49\linewidth]{deltaT_PicoSil_vs_MCP_TotalCharge_16gev.pdf}
+	\includegraphics[width=0.49\linewidth]{deltaT_PicoSil_vs_MCP_TotalCharge_16gevDelay.pdf}
+	\caption{The TOF histograms from the HGC layer to the Photonis for 16 GeV electron beams.
+	The pixel $\Delta t$ values were combined with total charge weighting.
+	The left plot has 6 $X_0$ of tungsten absorber in front of the HGC layer.
+	The right plot has 3 $X_0$ on either side of the HGC layer.}
+	\label{fig:HGCvsMCP}
+\end{figure}
+
+For the last 2 runs in the table, the 6 $X_0$ of absorber in front of the HGC layer gets replaced with 3 $X_0$ in front and 3 $X_0$ behind it (but still in front of the Photonis and Photek).
+The HGC time resolution gets significantly worse in these configurations.
+Additionally, combining the detectors with equal weighting results in a time resolution noticeably \textit{worse} than just the Photonis MCP time resolution.
+A possible explanation for this phenomena is that the particle shower only developed/spread out \textit{after} passing through the HGC layer, which smeared the normal distribution of times from the HGC pixels. 
+In this case, the higher time resolutions would be attributed to the 3 $X_0$ behind the HGC layer.
+
+A way to see if the 3 $X_0$ plays a role in the higher time resolutions is to compute a different time-of-flight.
+Previously the TOF values calculated were either from an HGC pixel to the Photek, or from the Photonis to the Photek.
+However, if a TOF from the HGC layer to the Photonis increases significantly from the first runs in the table to the last 2 runs, then the above assertion may gain some ground.
+
+From Figure \ref{fig:HGCvsMCP}, it is clear that the different absorber arrangement is the cause of the worse time resolution values.
+However, it is not yet possible to attribute this effect to the 3 $X_0$ in front of the HGC, because it may be the the 3 $X_0$ behind the HGC.
+Table 2 has the new TOF $\sigma$ values for all the runs in Table 1.
+
+\begin{figure}[t]
+\centering
+	\includegraphics[width=0.75\linewidth]{table_HGC_vs_MCP.png}
+	\caption*{Table 2:
+	TOF results from the HGC layer to the Photonis for different configurations.
+	There are event and total charge weighting columns.
+	Since the pixels are not manually smeared, there is no need for equal weighting here.
+	Note that the results in the table have not been updated for the most recent code iteration,
+	so the actual numbers may vary slightly.
+	PicoSil represents the HGC layer.}
+	%\label{table:vs}
+\end{figure}
+%% Insert this as a table at some point, and delete the line using the package <caption>.
+
+\section{Conclusions and Further Research}
+In this report, different detector combination mechanisms have been defined and compared.
+Charge weighting should be used for combinations when there are large disparities in the time resolutions of the HGC pixels.
+Otherwise, when there exists similar resolutions or smeared pixels, then equal weighting becomes more favorable.
+Additionally, there seems to be a $\sqrt{n}$ improvement in the time resolution when, on average, n pixels with similar time resolutions pass the event selection requirements, although further analysis is necessary to fully understand this.
+Lastly, the existence of absorber material behind some detectors may contribute to a worse time resolution.
+
+The analysis code is being used for the HGC layer and Photonis MCP to look at how these time resolutions vary for different configurations (i.e. absorber type, spacing, and thickness; beam energy; etc). 
+
+The next steps in the data analysis also include incorporating the few runs in which the silicon pad had a reasonable signal to noise ratio.
+If it can be recovered, then 3 longitudinal layers can be combined,
+If time allows, another analysis includes looking at the proton runs in addition to electron runs.
+Additionally, equal weighting when combining two detectors should result in a new time resolution given by:
+
+\[
+\frac{1}{2} \sqrt{\sigma_a^2+\sigma_b^2}
+\]
+Further research includes testing this statement, and comparing with how the time resolution should and does improve for unequal weightings.
 
 
 
-%%% The following is a multi-figure example %%%
+
+
+%%% The following is a multi-figure (each with different caption) example %%%
 \begin{comment}
 \begin{figure}[h]
 \centering
