@@ -432,38 +432,56 @@ Figure \ref{fig:500psAll} shows the addition of each smeared pixel using an equa
 
 \begin{figure}[h]
 \centering
-	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_1_Pixels.pdf}
-	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_2_Pixels.pdf}
+	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_1_Pixels500.pdf}
+	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_2_Pixels500.pdf}
 	
-	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_3_Pixels.pdf}
-	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_4_Pixels.pdf}
-	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_5_Pixels.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_3_Pixels500.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_4_Pixels500.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_5_Pixels500.pdf}
 	
-	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_6_Pixels.pdf}
-	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_7_Pixels.pdf}
+	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_6_Pixels500.pdf}
+	\includegraphics[width=0.4\textwidth]{SKIROC/SKIROC_7_Pixels500.pdf}
 	\caption{Adding in pixels in decreasing events order.
 		Each has been smeared by 500 ps.}
 	\label{fig:500psAll}
 \end{figure}
 
-In order to simulate another HGC layer, the Photonis MCP was smeared to 330 ps and combined with the $\Delta t$ values that were used to populate the final histogram in Figure \ref{fig:500psAll}. The Photonis TOF and combined TOF histograms are given in Figures \ref{fig:500psMCP} and \ref{fig:500psHGCMCP}.
+In order to simulate another HGC layer, the Photonis MCP was smeared to 330 ps and combined with the $\Delta t$ values that were used to populate the final histogram in Figure \ref{fig:500psAll}. The Photonis TOF and combined TOF histograms are given in Figures \ref{fig:500psMCP} and \ref{fig:500psHGCMCP}. 
+The initial 500 ps resolution was improved to around 240 ps. 
 
 \begin{figure}[h]
 \centering
 \begin{minipage}[t]{0.49\textwidth}
-	\includegraphics[width=\linewidth]{SKIROC/deltaTMCPSmear.pdf}
+	\includegraphics[width=\linewidth]{SKIROC/deltaTMCPSmear500.pdf}
 	\caption{TOF histogram for Photonis MCP smeared to 330 ps.}
 	\label{fig:500psMCP}
 \end{minipage} \hfill
 \begin{minipage}[t]{0.49\textwidth}
-	\includegraphics[width=\linewidth]{SKIROC/deltaT_PicoSilEqual_MCP_Equal_BothSmear.pdf}
+	\includegraphics[width=\linewidth]{SKIROC/deltaT_PicoSilEqual_MCP_Equal_BothSmear500.pdf}
 	\caption{TOF histogram, equally weighting smeared HGC layer and Photonis.}
 	\label{fig:500psHGCMCP}
 \end{minipage}
 \end{figure}
 
 \subsubsection{Add Pixels Individually: Exclude Center Pixel}
+As for the 50 ps simulation, it may be insightful to compute the combined TOF histogram using just the inner ring pixels.
+Figure \ref{fig:500psAll_NoCenter} shows the time resolution improves from about 500 ps to approximately 370 ps. 
+The upshot is that the center pixel is not necessary for the time resolution to improve.
+However if the center pixel initially has a much better time resolution then the improvement will be limited.
 
+\begin{figure}
+\centering
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_1_Pixels_NoCenter500.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_2_Pixels_NoCenter500.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_3_Pixels_NoCenter500.pdf}
+
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_4_Pixels_NoCenter500.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_5_Pixels_NoCenter500.pdf}
+	\includegraphics[width=0.32\textwidth]{SKIROC/SKIROC_6_Pixels_NoCenter500.pdf}
+	\caption{Adding inner ring pixels in decreasing events order.
+		Each has been smeared by 500 ps.}
+	\label{fig:500psAll_NoCenter}
+\end{figure}
 
 \subsection{Minimize $\chi^2$ or Maximize Log-Likelihood}
 ------------------------Move this subsection somewhere more appropriate-----------------------
